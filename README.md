@@ -1,6 +1,7 @@
 # BioVet MCP Server
 
 [![BioVet MCP server on Glama](https://glama.ai/mcp/servers/Bio-Vet/biovet-mcp/badges/score.svg)](https://glama.ai/mcp/servers/Bio-Vet/biovet-mcp)
+[![smithery badge](https://smithery.ai/badge/pwnz13/biovet)](https://smithery.ai/servers/pwnz13/biovet)
 
 **Remote MCP server for BioVet — a network of 20 veterinary clinics in Moscow, Russia (open 24/7).**
 
