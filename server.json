@@ -1,0 +1,17 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Bio-Vet/biovet-mcp",
+  "description": "Vet clinic network in Moscow (20 clinics, 24/7): find a clinic with live ratings, live prices for 900+ services, open appointment slots, real visit booking, vet-approved symptom triage, vet-reviewed Q&A base, pet food safety. Russian-language tools.",
+  "repository": {
+    "url": "https://github.com/Bio-Vet/biovet-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://bio.vet/",
+  "version": "1.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://bio.vet/mcp"
+    }
+  ]
+}
