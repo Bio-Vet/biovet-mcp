@@ -1,5 +1,7 @@
 # BioVet MCP Server
 
+[![BioVet MCP server on Glama](https://glama.ai/mcp/servers/Bio-Vet/biovet-mcp/badges/score.svg)](https://glama.ai/mcp/servers/Bio-Vet/biovet-mcp)
+
 **Remote MCP server for BioVet — a network of 20 veterinary clinics in Moscow, Russia (open 24/7).**
 
 Lets AI assistants (Claude, agentic browsers, any MCP client) find a clinic, check live prices, see open appointment slots, **book a visit**, run a symptom urgency check (triage table approved by licensed veterinarians) and check whether a food or houseplant is safe for a pet.
