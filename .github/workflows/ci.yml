@@ -1,0 +1,101 @@
+name: CI
+
+# Репозиторий — витрина УДАЛЁННОГО сервера: кода здесь нет, поэтому проверяем то,
+# что действительно может сломаться, — что заявленный эндпоинт жив и отдаёт те же
+# инструменты, что описаны в README и манифесте. Гоняем и по расписанию: сервер
+# живёт отдельно от репозитория и может отвалиться без единого коммита.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  metadata:
+    name: Metadata files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON syntax
+        run: |
+          for f in server.json glama.json; do
+            python3 -c "import json,sys; json.load(open('$f')); print('$f — ok')"
+          done
+      - name: Check required fields
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          s = json.load(open("server.json"))
+          g = json.load(open("glama.json"))
+          errors = []
+          if not s.get("name"): errors.append("server.json: нет name")
+          if not s.get("version"): errors.append("server.json: нет version")
+          remotes = s.get("remotes") or []
+          if not remotes: errors.append("server.json: нет remotes")
+          for r in remotes:
+              if not r.get("url", "").startswith("https://"): errors.append(f"server.json: небезопасный url {r.get('url')!r}")
+          if not g.get("maintainers"): errors.append("glama.json: нет maintainers")
+          if errors:
+              print("\n".join(errors)); sys.exit(1)
+          print(f"server.json: {s['name']} v{s['version']} → {remotes[0]['url']}")
+          print(f"glama.json: maintainers = {', '.join(g['maintainers'])}")
+          PY
+
+  live-server:
+    name: Live MCP endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Endpoint answers JSON-RPC and lists the documented tools
+        run: |
+          python3 - <<'PY'
+          import json, sys, urllib.request
+
+          URL = json.load(open("server.json"))["remotes"][0]["url"]
+          HEAD = {"Content-Type": "application/json", "Accept": "application/json, text/event-stream",
+                  "User-Agent": "biovet-mcp-ci"}
+
+          def rpc(method, params=None, rid=1):
+              body = {"jsonrpc": "2.0", "id": rid, "method": method}
+              if params is not None:
+                  body["params"] = params
+              req = urllib.request.Request(URL, data=json.dumps(body).encode(), headers=HEAD)
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  return json.loads(r.read().decode())
+
+          init = rpc("initialize", {"protocolVersion": "2025-06-18", "capabilities": {},
+                                    "clientInfo": {"name": "ci", "version": "1"}})
+          info = init.get("result", {}).get("serverInfo", {})
+          print("initialize →", info.get("name"), info.get("version"))
+
+          tools = [t["name"] for t in rpc("tools/list", rid=2).get("result", {}).get("tools", [])]
+          print("tools/list →", ", ".join(tools))
+
+          # инструменты, обещанные в README: если пропадут, клиенты сломаются молча
+          expected = {"find_clinic", "get_prices", "check_slots", "book_visit", "triage", "food_check"}
+          missing = expected - set(tools)
+          if missing:
+              print("НЕТ обещанных инструментов:", ", ".join(sorted(missing))); sys.exit(1)
+
+          # безопасный вызов: только чтение, никаких записей на приём
+          res = rpc("tools/call", {"name": "find_clinic", "arguments": {"query": "Беляево"}}, rid=3)
+          text = json.dumps(res.get("result", {}), ensure_ascii=False)
+          if "БиоВет" not in text and "Беляево" not in text:
+              print("find_clinic вернул неожиданный ответ:", text[:400]); sys.exit(1)
+          print("find_clinic → ответ получен, длина", len(text))
+          PY
+
+      - name: Manifest matches the endpoint
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request
+          req = urllib.request.Request("https://bio.vet/.well-known/mcp.json",
+                                       headers={"User-Agent": "biovet-mcp-ci"})
+          m = json.loads(urllib.request.urlopen(req, timeout=30).read().decode())
+          local = json.load(open("server.json"))["remotes"][0]["url"]
+          urls = json.dumps(m, ensure_ascii=False)
+          assert local in urls, f"манифест не содержит {local}"
+          print("манифест на месте, эндпоинт совпадает:", local)
+          PY
