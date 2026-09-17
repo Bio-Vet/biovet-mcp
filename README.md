@@ -2,7 +2,7 @@
 
 [![BioVet MCP server on Glama](https://glama.ai/mcp/servers/Bio-Vet/biovet-mcp/badges/score.svg)](https://glama.ai/mcp/servers/Bio-Vet/biovet-mcp)
 [![CI](https://github.com/Bio-Vet/biovet-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Bio-Vet/biovet-mcp/actions/workflows/ci.yml)
-[![smithery badge](https://smithery.ai/badge/pwnz13/biovet)](https://smithery.ai/servers/pwnz13/biovet)
+[![Smithery](https://img.shields.io/badge/Smithery-BioVet-6f42c1?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJsOSA1djEwbC05IDUtOS01VjdaIi8+PC9zdmc+)](https://smithery.ai/servers/pwnz13/biovet)
 
 **Официальный MCP-сервер сети [БиоВет](https://bio.vet/) — 20 ветеринарных клиник в Москве и Реутове, все работают круглосуточно, со своей лабораторией.**
 
