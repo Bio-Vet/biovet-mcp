@@ -39,7 +39,7 @@ Claude Desktop: *Settings → Connectors → Add custom connector* → `https://
 ```bash
 curl -s -X POST https://bio.vet/mcp -H 'Content-Type: application/json' -d '{
   "jsonrpc": "2.0", "id": 1, "method": "tools/call",
-  "params": { "name": "find_clinic", "arguments": { "query": "Марьино" } }
+  "params": { "name": "find_clinic", "arguments": { "query": "Кутузовская" } }
 }'
 ```
 
