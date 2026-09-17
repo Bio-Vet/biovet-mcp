@@ -74,7 +74,7 @@ jobs:
           print("tools/list →", ", ".join(tools))
 
           # инструменты, обещанные в README: если пропадут, клиенты сломаются молча
-          expected = {"find_clinic", "get_prices", "check_slots", "book_visit", "triage", "food_check"}
+          expected = {"find_clinic", "get_prices", "check_slots", "book_visit", "triage", "food_check", "ask_vet_kb"}
           missing = expected - set(tools)
           if missing:
               print("НЕТ обещанных инструментов:", ", ".join(sorted(missing))); sys.exit(1)
